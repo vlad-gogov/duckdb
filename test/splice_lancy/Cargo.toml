@@ -1,0 +1,13 @@
+[package]
+name = "duckdb-splice-lancy-smoke"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.94"
+publish = false
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+splice = { path = "../../third_party/lancy3/splice" }
+splice-lancy = { path = "../../third_party/lancy3/splice-lancy" }

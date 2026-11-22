@@ -651,6 +651,20 @@ unittest_relassert:
 smoke:
 	$(SMOKE_RUNNER) --batch-timeout 120 --test-list test/smoke_tests.list $(T)
 
+.PHONY: test-splice-lancy
+test-splice-lancy:
+	@test -f third_party/lancy3/splice-lancy/Cargo.toml || git submodule update --init -- third_party/lancy3
+	cmake $(GENERATOR) -S . -B build/splice-lancy -DCMAKE_BUILD_TYPE=Release \
+		-DBUILD_SPLICE_LANCY_SMOKE=ON -DBUILD_UNITTESTS=OFF -DBUILD_SHELL=OFF
+	@# Lancy3 requires Rust 1.94 or newer.
+	@if [ -z "$${RUSTUP_TOOLCHAIN:-}" ] && \
+		cargo --version | awk -F '[ .]' '$$1 == "cargo" && $$2 == 1 && $$3 < 94 { old = 1 } END { exit !old }' && \
+		rustup run nightly cargo --version >/dev/null 2>&1; then \
+		export RUSTUP_TOOLCHAIN=nightly; \
+	fi; \
+	cmake --build build/splice-lancy --config Release --target splice_lancy_smoke
+	cd build/splice-lancy && ctest -C Release -V -R '^splice_lancy_smoke$$'
+
 unittestarrow:
 	build/debug/test/run "[arrow]"
 

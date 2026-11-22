@@ -668,6 +668,7 @@ option(
   FALSE)
 option(BUILD_UNITTESTS "Build the unittest runner." TRUE)
 option(ENABLE_UNITTEST_CPP_TESTS "Build the C++ Unit Tests." TRUE)
+option(BUILD_SPLICE_LANCY_SMOKE "Build the Splice and Lancy JIT smoke test." OFF)
 option(NATIVE_LTO_STATIC_LIBRARIES
        "Run LTO before writing static libraries so non-LTO linkers can use them"
        OFF)
@@ -1442,6 +1443,11 @@ if(NOT CLANG_TIDY)
       add_subdirectory(benchmark)
     endif()
   endif()
+endif()
+
+if(BUILD_SPLICE_LANCY_SMOKE)
+  enable_testing()
+  add_subdirectory(test/splice_lancy)
 endif()
 
 duckdb_apply_architecture_flags()
